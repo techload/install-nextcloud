@@ -12,7 +12,7 @@
 ################################################
 #!/bin/bash
 ### Set current NGINX Releaseversion
-NGINXVER="1.15.8"
+NGINXVER="1.15.9"
 ###global function to update and cleanup the environment
 function update_and_clean() {
 apt update

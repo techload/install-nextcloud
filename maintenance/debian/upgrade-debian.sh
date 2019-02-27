@@ -11,6 +11,7 @@ sed -i "s/post_max_size=.*/post_max_size=10240M/" /var/www/nextcloud/.user.ini
 sed -i "s/output_buffering=.*/output_buffering='Off'/" /var/www/nextcloud/.user.ini
 chown -R www-data:www-data /var/www/nextcloud
 su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ update:check'
+su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ app:update --all'
 /usr/sbin/service php7.3-fpm restart
 /usr/sbin/service nginx restart
 exit 0

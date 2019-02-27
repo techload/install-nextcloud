@@ -3,10 +3,10 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD-DEBIAN.SH
-# Version 2.2 (AMD64)
+# Version 2.3 (AMD64)
 # Nextcloud 15
-# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8, PHP 7.3
-# January, 30th 2019
+# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.9, PHP 7.3
+# February, 27th 2019
 ################################################
 # Debian Stretch 9.x AMD64 - Nextcloud 15
 ################################################
@@ -99,7 +99,6 @@ cd /usr/local/src/nginx/nginx-$NGINXVER/
 apt build-dep nginx -y && dpkg-buildpackage -b
 cd /usr/local/src/nginx/
 dpkg -i nginx_$NGINXVER*.deb
-###dpkg -i nginx_1.15.8-1~*.deb
 service nginx restart && apt-mark hold nginx
 ###enable NGINX autostart
 systemctl enable nginx.service
@@ -458,9 +457,9 @@ ssl_trusted_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
 ssl_session_timeout 1d;
 ssl_session_cache shared:SSL:50m;
 ssl_session_tickets off;
-ssl_protocols TLSv1.2 TLSv1.3;
+ssl_protocols TLSv1.3 TLSv1.2;
 ssl_ciphers 'TLS-CHACHA20-POLY1305-SHA256:TLS-AES-256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384';
-ssl_ecdh_curve secp521r1:secp384r1:prime256v1;
+ssl_ecdh_curve secp521r1:secp384r1;
 ssl_prefer_server_ciphers on;
 ssl_stapling on;
 ssl_stapling_verify on;

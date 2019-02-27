@@ -5,7 +5,7 @@
 # 5 1 * * *  /usr/local/src/install-nextcloud/optimize.sh 2>&1
 ####
 #!/bin/bash
-redis-cli -s /var/run/redis/redis.sock <<EOF
+redis-cli -s /var/run/redis/redis-server.sock <<EOF
 FLUSHALL
 quit
 EOF

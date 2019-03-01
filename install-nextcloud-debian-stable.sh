@@ -5,7 +5,7 @@
 # INSTALL-NEXTCLOUD-DEBIAN.SH
 # Version 1.0 (AMD64)
 # Nextcloud 15
-# March, 1st, 2019
+# March 1st, 2019
 ################################################
 # Debian Stretch 9.x AMD64 - Nextcloud 15
 ################################################

@@ -1,11 +1,11 @@
 ################################################
 # Carsten Rieger IT-Services
 # https://www.c-rieger.de
-# https://github.com/riegercloud
+# https://github.com/criegerde
 # INSTALL-NEXTCLOUD.SH
-# Version 1.0 (AMD64)
+# Version 1.1 (AMD64)
 # Nextcloud 15
-# March 1st, 2019
+# March 08th, 2019
 ################################################
 # Ubuntu 18.04 LTS AMD64 - Nextcloud 15
 ################################################
@@ -71,7 +71,6 @@ deb http://archive.ubuntu.com/ubuntu bionic-security main multiverse restricted 
 deb http://archive.ubuntu.com/ubuntu bionic-updates main multiverse restricted universe
 deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
 deb http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
-deb-src [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
 deb [arch=amd64] http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main
 EOF
 wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key
@@ -437,8 +436,8 @@ ssl_trusted_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
 ssl_session_timeout 1d;
 ssl_session_cache shared:SSL:50m;
 ssl_session_tickets off;
-ssl_protocols TLSv1.2;
-ssl_ciphers 'ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384';
+ssl_protocols TLSv1.3 TLSv1.2;
+ssl_ciphers 'TLS-CHACHA20-POLY1305-SHA256:TLS-AES-256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384';
 ssl_ecdh_curve secp521r1:secp384r1;
 ssl_prefer_server_ciphers on;
 ssl_stapling on;
@@ -453,7 +452,6 @@ proxy_set_header X-Forwarded-Protocol \$scheme;
 proxy_set_header X-Forwarded-For \$remote_addr;
 proxy_set_header X-Forwarded-Port \$server_port;
 proxy_set_header X-Forwarded-Server \$host;
-#proxy_set_header Early-Data \$ssl_early_data;
 proxy_connect_timeout 3600;
 proxy_send_timeout 3600;
 proxy_read_timeout 3600;

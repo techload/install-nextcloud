@@ -1,11 +1,11 @@
 ################################################
 # Carsten Rieger IT-Services
 # https://www.c-rieger.de
-# https://github.com/riegercloud
+# https://github.com/criegerde
 # INSTALL-NEXTCLOUD-DEBIAN.SH
-# Version 1.0 (AMD64)
+# Version 1.1 (AMD64)
 # Nextcloud 15
-# March 1st, 2019
+# March 08th, 2019
 ################################################
 # Debian Stretch 9.x AMD64 - Nextcloud 15
 ################################################
@@ -68,7 +68,6 @@ cat <<EOF >>/etc/apt/sources.list
 deb http://deb.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb [arch=amd64] http://nginx.org/packages/mainline/debian/ stretch nginx
-deb-src [arch=amd64] http://nginx.org/packages/mainline/debian/ stretch nginx
 deb [arch=amd64] http://mirror2.hs-esslingen.de/mariadb/repo/10.3/debian stretch main
 deb https://packages.sury.org/php/ stretch main
 deb http://ftp.debian.org/debian stretch-backports main
@@ -438,8 +437,8 @@ ssl_trusted_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
 ssl_session_timeout 1d;
 ssl_session_cache shared:SSL:50m;
 ssl_session_tickets off;
-ssl_protocols TLSv1.2;
-ssl_ciphers 'ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384';
+ssl_protocols TLSv1.3 TLSv1.2;
+ssl_ciphers 'TLS-CHACHA20-POLY1305-SHA256:TLS-AES-256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384';
 ssl_ecdh_curve secp521r1:secp384r1;
 ssl_prefer_server_ciphers on;
 ssl_stapling on;
@@ -454,7 +453,6 @@ proxy_set_header X-Forwarded-Protocol \$scheme;
 proxy_set_header X-Forwarded-For \$remote_addr;
 proxy_set_header X-Forwarded-Port \$server_port;
 proxy_set_header X-Forwarded-Server \$host;
-#proxy_set_header Early-Data \$ssl_early_data;
 proxy_connect_timeout 3600;
 proxy_send_timeout 3600;
 proxy_read_timeout 3600;

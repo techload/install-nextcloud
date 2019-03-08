@@ -1,7 +1,7 @@
 ################################################
 # Carsten Rieger IT-Services
 # https://www.c-rieger.de
-# https://github.com/riegercloud
+# https://github.com/criegerde
 # INSTALL-NEXTCLOUD.SH
 # Version 7.4 (AMD64)
 # Nextcloud 15

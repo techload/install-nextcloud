@@ -1,12 +1,12 @@
 ################################################
 # Carsten Rieger IT-Services
 # https://www.c-rieger.de
-# https://github.com/riegercloud
+# https://github.com/criegerde
 # INSTALL-NEXTCLOUD-DEBIAN.SH
-# Version 2.3 (AMD64)
+# Version 2.4 (AMD64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.9, PHP 7.3
-# February, 27th 2019
+# March, 08th 2019
 ################################################
 # Debian Stretch 9.x AMD64 - Nextcloud 15
 ################################################
@@ -143,7 +143,6 @@ include /etc/nginx/conf.d/*.conf;
 EOF
 ###restart NGINX
 /usr/sbin/service nginx restart
-
 ###create folders
 mkdir -p /var/nc_data /var/www/letsencrypt /usr/local/tmp/sessions /usr/local/tmp/apc
 ###apply permissions
@@ -151,8 +150,6 @@ chown -R www-data:www-data /var/nc_data /var/www
 chown -R www-data:root /usr/local/tmp/sessions /usr/local/tmp/apc
 ###install PHP
 apt install php7.3-fpm php7.3-gd php7.3-mysql php7.3-curl php7.3-xml php7.3-zip php7.3-intl php7.3-mbstring php7.3-json php7.3-bz2 php7.3-ldap php-apcu imagemagick php-imagick -y
-
-
 cp /etc/php/7.3/fpm/pool.d/www.conf /etc/php/7.3/fpm/pool.d/www.conf.bak
 cp /etc/php/7.3/cli/php.ini /etc/php/7.3/cli/php.ini.bak
 cp /etc/php/7.3/fpm/php.ini /etc/php/7.3/fpm/php.ini.bak
@@ -230,13 +227,11 @@ sed -i "s/09,39.*/# &/" /etc/cron.d/php
 # sed -i '$atmpfs /var/tmp tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
 sed -i '$atmpfs /usr/local/tmp/apc tmpfs defaults,uid=33,size=300M,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
 sed -i '$atmpfs /usr/local/tmp/sessions tmpfs defaults,uid=33,size=300M,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
-
 ###make use of RAMDISK
 mount -a
 ###restart PHP and NGINX
 /usr/sbin/service php7.3-fpm restart
 /usr/sbin/service nginx restart
-
 ###install MariaDB
 mariadbinfo
 apt update && apt install mariadb-server -y
@@ -463,7 +458,6 @@ ssl_ecdh_curve secp521r1:secp384r1;
 ssl_prefer_server_ciphers on;
 ssl_stapling on;
 ssl_stapling_verify on;
-#ssl_early_data on;
 EOF
 touch /etc/nginx/proxy.conf
 cat <<EOF >/etc/nginx/proxy.conf
@@ -474,7 +468,6 @@ proxy_set_header X-Forwarded-Protocol \$scheme;
 proxy_set_header X-Forwarded-For \$remote_addr;
 proxy_set_header X-Forwarded-Port \$server_port;
 proxy_set_header X-Forwarded-Server \$host;
-#proxy_set_header Early-Data \$ssl_early_data;
 proxy_connect_timeout 3600;
 proxy_send_timeout 3600;
 proxy_read_timeout 3600;

@@ -1,18 +1,19 @@
-################################################
+#########################################################
 # Carsten Rieger IT-Services
 # https://www.c-rieger.de
 # https://github.com/criegerde
-# INSTALL-NEXTCLOUD.SH
-# Version 7.4 (AMD64)
+# INSTALL-NEXTCLOUD-UBUNTU.SH
+# Version 3.0 (AMD64)
 # Nextcloud 15
-# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.9 PHP 7.3
-# March, 08th 2019
-################################################
-# Ubuntu 18.04 LTS AMD64 - Nextcloud 15
-################################################
+# OpenSSL 1.1.1, TLSv1.3, NGINX latest, PHP 7.3
+# March, 11th 2019
+#########################################################
+# Ubuntu Bionic Beaver 18.04.x AMD64 - Nextcloud 15
+#########################################################
+# TLS v.1.3 by default - thx to Ondřej Surý
+# updateable using sudo apt update && sudo apt ugrade -y
+#########################################################
 #!/bin/bash
-### Set current NGINX Releaseversion
-NGINXVER="1.15.9"
 ###global function to update and cleanup the environment
 function update_and_clean() {
 apt update
@@ -53,13 +54,16 @@ echo ""
 echo "***********************************************************"
 echo "You will be asked to set the MariaDB root password 3 times."
 echo ""
-echo "Please just confirm the dialogue (ENTER)."
+echo "Please just confirm the dialogue (ENTER) without setting"
+echo "any password yet!"
 echo ""
-echo "You will be asked again to set the root pwd"
-echo "while harden your MariaDB Server!"
-echo "*********************************************************"
+echo "You will be asked again to set the root pwd while harden"
+echo "your MariaDB Server!"
+echo "***********************************************************"
 echo ""
 echo "Press ENTER to install MariaDB"
+echo ""
+echo "***********************************************************"
 read
 clear
 }
@@ -72,32 +76,16 @@ cat <<EOF >>/etc/apt/sources.list
 deb http://archive.ubuntu.com/ubuntu bionic main multiverse restricted universe
 deb http://archive.ubuntu.com/ubuntu bionic-security main multiverse restricted universe
 deb http://archive.ubuntu.com/ubuntu bionic-updates main multiverse restricted universe
-deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
 deb http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
-deb-src [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
+deb http://ppa.launchpad.net/ondrej/nginx-mainline/ubuntu bionic main
 deb [arch=amd64] http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main
 EOF
-wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 4F4EA0AAE5267A6C
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 update_and_clean
 apt install software-properties-common zip unzip screen curl git wget ffmpeg libfile-fcntllock-perl -y
-apt remove nginx nginx-common nginx-full -y --allow-change-held-packages
-update_and_clean
 ###instal NGINX using TLSv1.3, OpenSSL 1.1.1
-mkdir /usr/local/src/nginx && cd /usr/local/src/nginx/
-apt install dpkg-dev -y && apt source nginx
-cd /usr/local/src && apt install git -y
-git clone https://github.com/openssl/openssl.git
-cd openssl && git checkout OpenSSL_1_1_1-stable
-cp /usr/local/src/install-nextcloud/maintainance/rules.nginx /usr/local/src/nginx/nginx-$NGINXVER/debian/rules
-sed -i "s/.*-Werror.*/# &/" /usr/local/src/nginx/nginx-$NGINXVER/auto/cc/gcc
-cd /usr/local/src/nginx/nginx-$NGINXVER/
-apt build-dep nginx -y && dpkg-buildpackage -b
-cd /usr/local/src/nginx/
-dpkg -i nginx_$NGINXVER-*.deb
-service nginx restart && apt-mark hold nginx
-# apt install nginx -y
+apt install nginx -y
 ###enable NGINX autostart
 systemctl enable nginx.service
 ### prepare the NGINX
@@ -140,7 +128,7 @@ include /etc/nginx/conf.d/*.conf;
 }
 EOF
 ###restart NGINX
-service nginx restart
+/usr/sbin/service nginx restart
 ###create folders
 mkdir -p /var/nc_data /var/www/letsencrypt /usr/local/tmp/sessions /usr/local/tmp/apc
 ###apply permissions
@@ -222,15 +210,14 @@ sed -i '$aapc.lazy_classes=0' /etc/php/7.3/fpm/php.ini
 sed -i '$aapc.lazy_functions=0' /etc/php/7.3/fpm/php.ini
 sed -i "s/09,39.*/# &/" /etc/cron.d/php
 (crontab -l ; echo "09,39 * * * * /usr/lib/php/sessionclean 2>&1") | crontab -u root -
-# sed -i '$atmpfs /tmp tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
-# sed -i '$atmpfs /var/tmp tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
+###modify /etc/fstab to use tmpfs
 sed -i '$atmpfs /usr/local/tmp/apc tmpfs defaults,uid=33,size=300M,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
 sed -i '$atmpfs /usr/local/tmp/sessions tmpfs defaults,uid=33,size=300M,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
-###make use of RAMDISK
+###make use of tmpfs
 mount -a
 ###restart PHP and NGINX
-service php7.3-fpm restart
-service nginx restart
+/usr/sbin/service php7.3-fpm restart
+/usr/sbin/service nginx restart
 ###install MariaDB
 mariadbinfo
 apt update && apt install mariadb-server -y
@@ -354,7 +341,6 @@ sed -i "s/unixsocketperm 700/unixsocketperm 770/" /etc/redis/redis.conf
 sed -i "s/# maxclients 10000/maxclients 512/" /etc/redis/redis.conf
 usermod -a -G redis www-data
 cp /etc/sysctl.conf /etc/sysctl.conf.bak && sed -i '$avm.overcommit_memory = 1' /etc/sysctl.conf
-#cp /etc/rc.local /etc/rc.local.bak && sed -i '$i \sysctl -w net.core.somaxconn=65535' /etc/rc.local
 ###install self signed certificates
 apt install ssl-cert -y
 ###prepare NGINX for Nextcloud and SSL
@@ -399,16 +385,6 @@ deny all;
 location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console) {
 deny all;
 }
-location ~ \.(?:flv|mp4|mov|m4a)\$ {
-mp4;
-mp4_buffer_size 100m;
-mp4_max_buffer_size 1024m;
-fastcgi_split_path_info ^(.+\.php)(/.*)\$;
-include fastcgi_params;
-include php_optimization.conf;
-fastcgi_pass php-handler;
-fastcgi_param HTTPS on;
-}
 location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+)\.php(?:\$|/) {
 fastcgi_split_path_info ^(.+\.php)(/.*)\$;
 include fastcgi_params;
@@ -427,6 +403,7 @@ expires 360d;
 }
 }
 EOF
+###create a Let's Encrypt vhost file
 touch /etc/nginx/conf.d/letsencrypt.conf
 cat <<EOF >/etc/nginx/conf.d/letsencrypt.conf
 server {
@@ -441,6 +418,7 @@ root /var/www/letsencrypt;
 }
 }
 EOF
+###create a ssl configuration file
 touch /etc/nginx/ssl.conf
 cat <<EOF >/etc/nginx/ssl.conf
 ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
@@ -460,6 +438,7 @@ ssl_prefer_server_ciphers on;
 ssl_stapling on;
 ssl_stapling_verify on;
 EOF
+###create a proxy configuration file
 touch /etc/nginx/proxy.conf
 cat <<EOF >/etc/nginx/proxy.conf
 proxy_set_header Host \$host;
@@ -474,6 +453,7 @@ proxy_send_timeout 3600;
 proxy_read_timeout 3600;
 proxy_redirect off;
 EOF
+###create a header configuration file
 touch /etc/nginx/header.conf
 cat <<EOF >/etc/nginx/header.conf
 add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;";
@@ -485,6 +465,7 @@ add_header X-XSS-Protection "1; mode=block" always;
 add_header Referrer-Policy "no-referrer" always;
 add_header Feature-Policy "accelerometer 'none'; autoplay 'self'; geolocation 'none'; midi 'none'; notifications 'self'; push 'self'; sync-xhr 'self'; microphone 'self'; camera 'self'; magnetometer 'none'; gyroscope 'none'; speaker 'self'; vibrate 'self'; fullscreen 'self'; payment 'none'; usb 'none'";
 EOF
+###create a nginx optimization file
 touch /etc/nginx/optimization.conf
 cat <<EOF >/etc/nginx/optimization.conf
 fastcgi_read_timeout 3600;
@@ -502,6 +483,7 @@ gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;
 gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;
 gzip_disable "MSIE [1-6]\.";
 EOF
+###create a nginx php optimization file
 touch /etc/nginx/php_optimization.conf
 cat <<EOF >/etc/nginx/php_optimization.conf
 fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
@@ -514,7 +496,9 @@ fastcgi_cache_valid 404 1m;
 fastcgi_cache_valid any 1h;
 fastcgi_cache_methods GET HEAD;
 EOF
+###enable all nginx configuration files
 sed -i s/\#\include/\include/g /etc/nginx/nginx.conf
+###enable all nginx configuration files
 sed -i "s/server_name YOUR.DEDYN.IO;/server_name $(hostname);/" /etc/nginx/conf.d/nextcloud.conf
 ###create Nextclouds cronjob
 (crontab -u www-data -l ; echo "*/15 * * * * php -f /var/www/nextcloud/cron.php > /dev/null 2>&1") | crontab -u www-data -
@@ -525,7 +509,9 @@ wget https://download.nextcloud.com/server/releases/latest.tar.bz2
 tar -xjf latest.tar.bz2 -C /var/www
 ###apply permissions
 chown -R www-data:www-data /var/www/
-rm latest.tar.bz2
+###remove the Nextcloud sources
+rm -f latest.tar.bz2
+###update and restart all sources and services
 update_and_clean
 restart_all_services
 clear
@@ -547,14 +533,15 @@ echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo ""
 echo "Your NEXTCLOUD will now be installed silently - please be patient ..."
 echo ""
+###NEXTCLOUD INSTALLATION
 sudo -u www-data php /var/www/nextcloud/occ maintenance:install --database "mysql" --database-name "$NEXTCLOUDDBNAME"  --database-user "$NEXTCLOUDDBUSER" --database-pass "$NEXTCLOUDDBPASSWORD" --admin-user "$NEXTCLOUDADMINUSER" --admin-pass "$NEXTCLOUDADMINUSERPASSWORD" --data-dir "/var/nc_data"
-declare -l YOURSERVERNAME
 ###read and store the current hostname in lowercases
+declare -l YOURSERVERNAME
 YOURSERVERNAME=$(hostname)
+###Modifications to Nextclouds config.php
 sudo -u www-data cp /var/www/nextcloud/config/config.php /var/www/nextcloud/config/config.php.bak
 sudo -u www-data php /var/www/nextcloud/occ config:system:set trusted_domains 0 --value=$YOURSERVERNAME
 sudo -u www-data php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value=https://$YOURSERVERNAME
-# sudo -u www-data sed -in 's/http:\/\/localhost/https:\/\/'$YOURSERVERNAME'/' /var/www/nextcloud/config/config.php
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 ###backup of the effected file .user.ini
@@ -618,7 +605,7 @@ EOF
 sed -i 's/^[ ]*//' /var/www/nextcloud/config/config.php
 restart_all_services
 update_and_clean
-###installfail2ban
+###install fail2ban
 apt install fail2ban -y
 ###create a fail2ban Nextcloud filter
 touch /etc/fail2ban/filter.d/nextcloud.conf
@@ -658,8 +645,7 @@ ufw logging medium && ufw default deny incoming && ufw enable
 /usr/sbin/service ufw restart
 /usr/sbin/service fail2ban restart
 /usr/sbin/service redis-server restart
-sudo -u www-data php /var/www/nextcloud/occ app:disable survey_client
-sudo -u www-data php /var/www/nextcloud/occ app:disable firstrunwizard
+###enable audit and pdf apps
 sudo -u www-data php /var/www/nextcloud/occ app:enable admin_audit
 sudo -u www-data php /var/www/nextcloud/occ app:enable files_pdfviewer
 ###clean up redis-server
@@ -678,20 +664,29 @@ echo "---------------------------------"
 echo ""
 sudo -u www-data php /var/www/nextcloud/occ db:add-missing-indices
 sudo -u www-data php /var/www/nextcloud/occ db:convert-filecache-bigint
+###solve an issue with phpimagick
 phpimagickexception
+###rescan Nextcloud data
 nextcloud_scan_data
 restart_all_services
 ### issue the cron.php once
 sudo -u www-data php /var/www/nextcloud/cron.php
 clear
 echo ""
-echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
 echo " Open your browser and call your Nextcloud at"
 echo ""
 echo " https://$YOURSERVERNAME"
 echo ""
-echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-### CleanUp ###
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo ""
+echo " I do strongly recommend to enhance the server security by issuing"
+echo " openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096"
+echo " find out more: https://www.c-rieger.de/nextcloud-installation-guide-ubuntu/#dhparamfile"
+echo ""
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo ""
+### CleanUp
 cat /dev/null > ~/.bash_history && history -c && history -w
 exit 0

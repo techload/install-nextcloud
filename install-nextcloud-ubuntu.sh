@@ -375,6 +375,10 @@ return 301 \$scheme://\$host/remote.php/dav;
 location = /.well-known/caldav {
 return 301 \$scheme://\$host/remote.php/dav;
 }
+#SOCIAL app enabled? Please uncomment the following three rows
+#rewrite ^/.well-known/webfinger /nextcloud/public.php?service=webfinger last;
+#rewrite ^/.well-known/host-meta /nextcloud/public.php?service=host-meta last;
+#rewrite ^/.well-known/host-meta.json /nextcloud/public.php?service=host-meta-json last;
 client_max_body_size 10240M;
 location / {
 rewrite ^ /index.php\$request_uri;

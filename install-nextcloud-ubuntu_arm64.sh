@@ -3,10 +3,10 @@
 # https://www.c-rieger.de
 # https://github.com/criegerde
 # INSTALL-NEXTCLOUD.SH
-# Version 7.3 (ARM64)
+# Version 7.4 (ARM64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.9, PHP7.3
-# March, 08th 2019
+# March, 13th 2019
 ################################################
 # Ubuntu 18.04 LTS ARM64 - Nextcloud 15
 ################################################
@@ -53,13 +53,16 @@ echo ""
 echo "***********************************************************"
 echo "You will be asked to set the MariaDB root password 3 times."
 echo ""
-echo "Please just confirm the dialogue (ENTER)."
+echo "Please just confirm the dialogue (ENTER) without setting"
+echo "any password yet!"
 echo ""
-echo "You will be asked again to set the root pwd"
-echo "while harden your MariaDB Server!"
-echo "*********************************************************"
+echo "You will be asked again to set the root pwd while harden"
+echo "your MariaDB Server!"
+echo "***********************************************************"
 echo ""
 echo "Press ENTER to install MariaDB"
+echo ""
+echo "***********************************************************"
 read
 clear
 }
@@ -383,6 +386,10 @@ return 301 \$scheme://\$host/remote.php/dav;
 location = /.well-known/caldav {
 return 301 \$scheme://\$host/remote.php/dav;
 }
+#SOCIAL app enabled? Please uncomment the following three rows
+#rewrite ^/.well-known/webfinger /nextcloud/public.php?service=webfinger last;
+#rewrite ^/.well-known/host-meta /nextcloud/public.php?service=host-meta last;
+#rewrite ^/.well-known/host-meta.json /nextcloud/public.php?service=host-meta-json last;
 client_max_body_size 10240M;
 location / {
 rewrite ^ /index.php\$request_uri;
@@ -463,7 +470,6 @@ proxy_set_header X-Forwarded-Protocol \$scheme;
 proxy_set_header X-Forwarded-For \$remote_addr;
 proxy_set_header X-Forwarded-Port \$server_port;
 proxy_set_header X-Forwarded-Server \$host;
-proxy_set_header Early-Data \$ssl_early_data;
 proxy_connect_timeout 3600;
 proxy_send_timeout 3600;
 proxy_read_timeout 3600;
@@ -680,13 +686,20 @@ restart_all_services
 sudo -u www-data php /var/www/nextcloud/cron.php
 clear
 echo ""
-echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
 echo " Open your browser and call your Nextcloud at"
 echo ""
 echo " https://$YOURSERVERNAME"
 echo ""
-echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-### CleanUp ###
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo ""
+echo " I do strongly recommend to enhance the server security by issuing"
+echo " openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096"
+echo " find out more: https://www.c-rieger.de/nextcloud-installation-guide-ubuntu/#dhparamfile"
+echo ""
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo ""
+### CleanUp
 cat /dev/null > ~/.bash_history && history -c && history -w
 exit 0

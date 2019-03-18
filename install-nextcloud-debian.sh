@@ -86,7 +86,7 @@ apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74C
 ###
 update_and_clean
 ###
-apt install lsb-release ca-certificates software-properties-common zip unzip screen curl git wget ffmpeg libfile-fcntllock-perl -y
+apt install lsb-release ca-certificates software-properties-common zip unzip screen curl git wget libfile-fcntllock-perl -y
 apt remove nginx nginx-common nginx-full -y --allow-change-held-packages
 update_and_clean
 apt install nginx -y

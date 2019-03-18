@@ -539,7 +539,7 @@ echo ""
 echo "Your NEXTCLOUD will now be installed silently - please be patient ..."
 echo ""
 ###NEXTCLOUD INSTALLATION
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ maintenance:install --database mysql --database-name '$NEXTCLOUDDBNAME' --database-user '$NEXTCLOUDDBUSER' --database-pass '$NEXTCLOUDDBPASSWORD' --admin-user '$NEXTCLOUDADMINUSER' --admin-pass '$NEXTCLOUDADMINUSERPASSWORD' --data-dir '/var/nc_data''
+su - www-data -s /bin/bash -c "php /var/www/nextcloud/occ maintenance:install --database mysql --database-name '$NEXTCLOUDDBNAME' --database-user '$NEXTCLOUDDBUSER' --database-pass '$NEXTCLOUDDBPASSWORD' --admin-user '$NEXTCLOUDADMINUSER' --admin-pass '$NEXTCLOUDADMINUSERPASSWORD' --data-dir '/var/nc_data'"
 ###read and store the current hostname in lowercases
 declare -l YOURSERVERNAME
 YOURSERVERNAME=$(hostname)

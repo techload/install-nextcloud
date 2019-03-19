@@ -11,7 +11,7 @@
 # Debian Stretch 9.x AMD64 - Nextcloud 15
 #########################################################
 # TLS v.1.3 by default - thx to Ondřej Surý
-# updateable using sudo apt update && sudo apt ugrade -y
+# updateable using sudo apt update && sudo apt upgrade -y
 #########################################################
 #!/bin/bash
 ###global function to update and cleanup the environment

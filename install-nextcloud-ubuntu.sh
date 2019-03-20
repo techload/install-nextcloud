@@ -3,10 +3,10 @@
 # https://www.c-rieger.de
 # https://github.com/criegerde
 # INSTALL-NEXTCLOUD-UBUNTU.SH
-# Version 3.0 (AMD64)
+# Version 3.1 (AMD64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX latest, PHP 7.3
-# March, 11th 2019
+# March, 20th 2019
 #########################################################
 # Ubuntu Bionic Beaver 18.04.x AMD64 - Nextcloud 15
 #########################################################
@@ -467,7 +467,7 @@ add_header X-Permitted-Cross-Domain-Policies none;
 add_header X-Content-Type-Options "nosniff" always;
 add_header X-XSS-Protection "1; mode=block" always;
 add_header Referrer-Policy "no-referrer" always;
-add_header Feature-Policy "accelerometer 'none'; autoplay 'self'; geolocation 'none'; midi 'none'; notifications 'self'; push 'self'; sync-xhr 'self'; microphone 'self'; camera 'self'; magnetometer 'none'; gyroscope 'none'; speaker 'self'; vibrate 'self'; fullscreen 'self'; payment 'none'; usb 'none'";
+#add_header Feature-Policy "accelerometer 'none'; autoplay 'self'; geolocation 'none'; midi 'none'; sync-xhr 'self' ; microphone 'self'; camera 'self'; magnetometer 'none'; gyroscope 'none'; speaker 'self'; fullscreen 'self'; payment 'none'; usb 'none'";                                                                                   
 EOF
 ###create a nginx optimization file
 touch /etc/nginx/optimization.conf
@@ -586,8 +586,9 @@ array (
 'htaccess.RewriteBase' => '/',
 'integrity.check.disabled' => false,
 'knowledgebaseenabled' => false,
-'logtimezone' => 'Europe/Berlin',
 'log_rotate_size' => 104857600,
+'logfile' => '/var/nc_data/nextcloud.log',
+'logtimezone' => 'Europe/Berlin',
 'memcache.local' => '\\OC\\Memcache\\APCu',
 'memcache.locking' => '\\OC\\Memcache\\Redis',
 'preview_max_x' => 1024,

@@ -3,15 +3,14 @@
 # https://www.c-rieger.de
 # https://github.com/criegerde
 # INSTALL-NEXTCLOUD-DEBIAN.SH
-# Version 3.1 (AMD64)
+# Version 3.2 (AMD64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX latest, PHP 7.3
-# March, 20th 2019
+# March, 27th 2019
 #########################################################
 # Debian Stretch 9.x AMD64 - Nextcloud 15
 #########################################################
-# TLS v.1.3 by default - thx to Ondřej Surý
-# updateable using sudo apt update && sudo apt upgrade -y
+# more compatible regarding ANDROIDs (prime256v1;)
 #########################################################
 #!/bin/bash
 ###global function to update and cleanup the environment
@@ -432,16 +431,33 @@ ssl_trusted_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
 #ssl_certificate /etc/letsencrypt/live/YOUR.DEDYN.IO/fullchain.pem;
 #ssl_certificate_key /etc/letsencrypt/live/YOUR.DEDYN.IO/privkey.pem;
 #ssl_trusted_certificate /etc/letsencrypt/live/YOUR.DEDYN.IO/chain.pem;
-#ssl_dhparam /etc/ssl/certs/dhparam.pem;
+ssl_dhparam /etc/ssl/certs/dhparam.pem;
 ssl_session_timeout 1d;
 ssl_session_cache shared:SSL:50m;
 ssl_session_tickets off;
 ssl_protocols TLSv1.3 TLSv1.2;
 ssl_ciphers 'TLS-CHACHA20-POLY1305-SHA256:TLS-AES-256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384';
-ssl_ecdh_curve secp521r1:secp384r1;
+ssl_ecdh_curve secp521r1:secp384r1:prime256v1;
 ssl_prefer_server_ciphers on;
 ssl_stapling on;
 ssl_stapling_verify on;
+EOF
+###add a default dhparam.pem file
+touch /etc/ssl/certs/dhparam.pem
+cat <<EOF >/etc/ssl/certs/dhparam.pem
+-----BEGIN DH PARAMETERS-----
+MIICCAKCAgEA6tGoB0bEUoL1qoNXPJIcE3ObJz9LsPPgm6XevDXgDb0Gw53hN1+C
+tYRDwhRKt8wI16CrjEvx60FxOiRbbfF1QOcEVwNDSfXiac2ovjRlJTeO0CueeMN7
+oTI/yZKkDgEjx+Hv3u/UMT+kyqL9/i4yxg+xpysUYeAEgfg974BTmNIj0KzShbVF
+26JmQyod5YqR80vJ5wSIyy4L3HgKtc4tZTHxZltC9Kn4SRsgwIBiTOI4Gnfw1268
+N/U8IoKoUaQMjubG4cdVaaVN83eITiER6xGy7Nfpdnet42zm3UWaW03FlmB0nd3s
+Y4C6OzyV743UoIQDARt1Pk/H6SkwlcIwkyICjNbtTe7nrBzmCBI3OB6zBKiPb7nz
+2kPW2cm2e6Pa3WtSWsfl89QLSzB/b/BG3+FqK/aVI0OEyEb8dV5boOlI1fIGiH0d
+cjAr6bwArEiOxi3TaVCMDF4tvVZcsB7icGTQ6tsGyqhzrnWlyb8Tn4GuiHgGGz7r
+rAP5tv02AmtRTQ/jv+JXX2In+9Hrm5yhT7KpsWMF1mCQKqdpfu0+6MKPSfrXu9l/
+Uk/SRa/i7GrBuMPDabx33sTZsY4OlkvRB6D7WN+G+ArLfIcgeegpMyBHvrjcnJN4
+ILVziHHg2Z70Z2hfEsOaSCuApJlggqSeRjgGm/wlTaOnbonkhsndnFMCAQI=
+-----END DH PARAMETERS-----
 EOF
 ###create a proxy configuration file
 touch /etc/nginx/proxy.conf
@@ -681,19 +697,22 @@ restart_all_services
 su - www-data -s /bin/bash -c 'php /var/www/nextcloud/cron.php'
 clear
 echo ""
-echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
 echo " Open your browser and call your Nextcloud at"
 echo ""
 echo " https://$YOURSERVERNAME"
 echo ""
-echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
-echo " I do strongly recommend to enhance the server security by issuing"
+echo " I do strongly recommend to enhance the server security by re-creating"
+echo " the dhparam.pem file:"
+echo ""
 echo " openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096"
-echo " find out more: https://www.c-rieger.de/nextcloud-installation-guide-debian/#dhparamfile"
 echo ""
-echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo " https://www.c-rieger.de/nextcloud-installation-guide-ubuntu/#dhparamfile"
+echo ""
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
 ### CleanUp
 cat /dev/null > ~/.bash_history && history -c && history -w

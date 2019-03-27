@@ -11,7 +11,7 @@
 # Debian Stretch 9.x AMD64 - Nextcloud 15
 #########################################################
 # TLS v.1.3 by default - thx to Ondřej Surý
-# updateable using sudo apt update && sudo apt ugrade -y
+# updateable using sudo apt update && sudo apt upgrade -y
 #########################################################
 #!/bin/bash
 ###global function to update and cleanup the environment
@@ -85,7 +85,7 @@ apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74C
 ###
 update_and_clean
 ###
-apt install lsb-release ca-certificates software-properties-common zip unzip screen curl git wget ffmpeg libfile-fcntllock-perl -y
+apt install lsb-release ca-certificates software-properties-common zip unzip screen curl git wget libfile-fcntllock-perl -y
 apt remove nginx nginx-common nginx-full -y --allow-change-held-packages
 update_and_clean
 apt install nginx -y
@@ -538,7 +538,7 @@ echo ""
 echo "Your NEXTCLOUD will now be installed silently - please be patient ..."
 echo ""
 ###NEXTCLOUD INSTALLATION
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ maintenance:install --database mysql --database-name '$NEXTCLOUDDBNAME' --database-user '$NEXTCLOUDDBUSER' --database-pass '$NEXTCLOUDDBPASSWORD' --admin-user '$NEXTCLOUDADMINUSER' --admin-pass '$NEXTCLOUDADMINUSERPASSWORD' --data-dir '/var/nc_data''
+su - www-data -s /bin/bash -c "php /var/www/nextcloud/occ maintenance:install --database mysql --database-name '$NEXTCLOUDDBNAME' --database-user '$NEXTCLOUDDBUSER' --database-pass '$NEXTCLOUDDBPASSWORD' --admin-user '$NEXTCLOUDADMINUSER' --admin-pass '$NEXTCLOUDADMINUSERPASSWORD' --data-dir '/var/nc_data'"
 ###read and store the current hostname in lowercases
 declare -l YOURSERVERNAME
 YOURSERVERNAME=$(hostname)

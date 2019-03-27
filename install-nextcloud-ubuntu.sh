@@ -694,19 +694,22 @@ restart_all_services
 sudo -u www-data php /var/www/nextcloud/cron.php
 clear
 echo ""
-echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
 echo " Open your browser and call your Nextcloud at"
 echo ""
 echo " https://$YOURSERVERNAME"
 echo ""
-echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
-echo " I do strongly recommend to enhance the server security by re-creating dhparam.pem"
+echo " I do strongly recommend to enhance the server security by re-creating"
+echo " the dhparam.pem file:"
+echo ""
 echo " openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096"
-echo " find out more: https://www.c-rieger.de/nextcloud-installation-guide-ubuntu/#dhparamfile"
 echo ""
-echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo " https://www.c-rieger.de/nextcloud-installation-guide-ubuntu/#dhparamfile"
+echo ""
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
 ### CleanUp
 cat /dev/null > ~/.bash_history && history -c && history -w

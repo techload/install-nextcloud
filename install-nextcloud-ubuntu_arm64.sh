@@ -3,16 +3,16 @@
 # https://www.c-rieger.de
 # https://github.com/criegerde
 # INSTALL-NEXTCLOUD.SH
-# Version 7.4 (ARM64)
+# Version 7.5 (ARM64)
 # Nextcloud 15
-# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.9, PHP7.3
-# March, 13th 2019
+# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.10, PHP7.3
+# March, 27th 2019
 ################################################
 # Ubuntu 18.04 LTS ARM64 - Nextcloud 15
 ################################################
 #!/bin/bash
 ### Set current NGINX Releaseversion
-NGINXVER="1.15.9"
+NGINXVER="1.15.10"
 ###global function to update and cleanup the environment
 function update_and_clean() {
 apt update

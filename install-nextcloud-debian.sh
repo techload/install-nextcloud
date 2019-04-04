@@ -576,7 +576,7 @@ su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ background:cron'
 sed -i '/);/d' /var/www/nextcloud/config/config.php
 cat <<EOF >>/var/www/nextcloud/config/config.php
 'activity_expire_days' => 14,
-'auth.bruteforce.protection.enabled' => false,
+'auth.bruteforce.protection.enabled' => true,
 'blacklisted_files' =>
 array (
 0 => '.htaccess',

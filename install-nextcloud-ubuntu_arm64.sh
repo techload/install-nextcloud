@@ -355,7 +355,7 @@ cp /etc/sysctl.conf /etc/sysctl.conf.bak && sed -i '$avm.overcommit_memory = 1' 
 ###install self signed certificates
 apt install ssl-cert -y
 ###prepare NGINX for Nextcloud and SSL
-mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bak
+[ -f /etc/nginx/conf.d/default.conf ] && mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bak
 touch /etc/nginx/conf.d/default.conf
 cat <<EOF >/etc/nginx/conf.d/nextcloud.conf
 server {

@@ -3,14 +3,14 @@
 # https://www.c-rieger.de
 # https://github.com/criegerde
 # INSTALL-NEXTCLOUD-DEBIAN.SH
-# Version 3.2 (AMD64)
+# Version 3.3 (AMD64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX latest, PHP 7.3
-# March, 27th 2019
+# April, 13th 2019
 #########################################################
 # Debian Stretch 9.x AMD64 - Nextcloud 15
 #########################################################
-# more compatible regarding ANDROIDs (prime256v1;)
+# resolver set to 127.0.0.1
 #########################################################
 #!/bin/bash
 ###global function to update and cleanup the environment
@@ -124,7 +124,7 @@ open_file_cache_errors on;
 keepalive_timeout 65;
 reset_timedout_connection on;
 server_tokens off;
-resolver 208.67.222.222 208.67.220.220 valid=30s;
+resolver 127.0.0.1 valid=30s;
 resolver_timeout 5s;
 include /etc/nginx/conf.d/*.conf;
 }

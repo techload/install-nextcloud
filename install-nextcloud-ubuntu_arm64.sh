@@ -3,12 +3,12 @@
 # https://www.c-rieger.de
 # https://github.com/criegerde
 # INSTALL-NEXTCLOUD.SH
-# Version 7.5 (ARM64)
+# Version 7.6 (ARM64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.10, PHP7.3
-# March, 27th 2019
+# April, 13th 2019
 ################################################
-# Ubuntu 18.04 LTS ARM64 - Nextcloud 15
+# resolver set to 127.0.0.1
 ################################################
 #!/bin/bash
 ### Set current NGINX Releaseversion
@@ -131,7 +131,7 @@ open_file_cache_errors on;
 keepalive_timeout 65;
 reset_timedout_connection on;
 server_tokens off;
-resolver 208.67.222.222 208.67.220.220 valid=30s;
+resolver 127.0.0.1 valid=30s;
 resolver_timeout 5s;
 include /etc/nginx/conf.d/*.conf;
 }

@@ -348,7 +348,7 @@ apt install ssl-cert -y
 touch /etc/nginx/conf.d/default.conf
 cat <<EOF >/etc/nginx/conf.d/nextcloud.conf
 server {
-server_name YOUR.DEDYN.IO;
+server_name COMET.CLOUDLOAD.COM.BR;
 listen 80 default_server;
 location ^~ /.well-known/acme-challenge {
 proxy_pass http://127.0.0.1:81;
@@ -359,7 +359,7 @@ return 301 https://\$host\$request_uri;
 }
 }
 server {
-server_name YOUR.DEDYN.IO;
+server_name COMET.CLOUDLOAD.COM.BR;
 listen 443 ssl http2 default_server;
 root /var/www/nextcloud/;
 access_log /var/log/nginx/nextcloud.access.log main;
@@ -428,9 +428,9 @@ cat <<EOF >/etc/nginx/ssl.conf
 ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
 ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
 ssl_trusted_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
-#ssl_certificate /etc/letsencrypt/live/YOUR.DEDYN.IO/fullchain.pem;
-#ssl_certificate_key /etc/letsencrypt/live/YOUR.DEDYN.IO/privkey.pem;
-#ssl_trusted_certificate /etc/letsencrypt/live/YOUR.DEDYN.IO/chain.pem;
+#ssl_certificate /etc/letsencrypt/live/COMET.CLOUDLOAD.COM.BR/fullchain.pem;
+#ssl_certificate_key /etc/letsencrypt/live/COMET.CLOUDLOAD.COM.BR/privkey.pem;
+#ssl_trusted_certificate /etc/letsencrypt/live/COMET.CLOUDLOAD.COM.BR/chain.pem;
 ssl_dhparam /etc/ssl/certs/dhparam.pem;
 ssl_session_timeout 1d;
 ssl_session_cache shared:SSL:50m;
@@ -519,7 +519,7 @@ fastcgi_cache_methods GET HEAD;
 EOF
 ###enable all nginx configuration files
 sed -i s/\#\include/\include/g /etc/nginx/nginx.conf
-sed -i "s/server_name YOUR.DEDYN.IO;/server_name $(hostname);/" /etc/nginx/conf.d/nextcloud.conf
+sed -i "s/server_name COMET.CLOUDLOAD.COM.BR;/server_name $(hostname);/" /etc/nginx/conf.d/nextcloud.conf
 ###create Nextclouds cronjob
 (crontab -u www-data -l ; echo "*/15 * * * * php -f /var/www/nextcloud/cron.php > /dev/null 2>&1") | crontab -u www-data -
 ###restart NGINX
